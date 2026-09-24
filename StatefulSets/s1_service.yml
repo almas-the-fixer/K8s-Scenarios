@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-headless
+  labels:
+    app: web
+spec:
+  clusterIP: "None"    # clusterIP: "None" is Important it gives Individual IP of each matching pod rather than normal services which load balance our req to any pods... we dont want that here in StatefulSets
+  selector:
+    app: stateful-nginx-server
+  ports:
+    - port: 80
+      targetPort: 80

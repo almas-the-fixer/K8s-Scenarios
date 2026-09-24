@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+  labels:
+    app: stateful-nginx-server
+spec:
+  serviceName: web-headless
+  replicas: 3
+  selector:
+    matchLabels:
+      app: stateful-nginx-server
+  template:
+    metadata:
+      labels:
+        app: stateful-nginx-server
+    spec:
+      containers:
+        - name: web-container
+          image: nginx:latest
+          volumeMounts:
+            - name: www
+              mountPath: /usr/share/nginx/html
+          ports:
+            - containerPort: 80
+  volumeClaimTemplates:
+    - metadata:
+        name: www
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
