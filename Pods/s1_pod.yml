@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-inspector
+  labels:
+    app: web-inspector
+    tier: frontend
+spec:
+  containers:
+    - name: web-inspector
+      image: nginx:1.25
+      ports:
+        - containerPort: 8080
+      env:
+        - name: ENVIRONMENT
+          value: staging
+      resources:
+        requests:
+          memory: 64Mi
+        limits:
+          memory: 128Mi
