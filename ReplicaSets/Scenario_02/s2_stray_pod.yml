@@ -1,0 +1,11 @@
+# s2_stray_pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stray-api
+  labels:
+    app: api
+spec:
+  containers:
+    - name: stray-api
+      image: nginx:1.25
