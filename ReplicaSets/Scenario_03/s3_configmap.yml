@@ -1,0 +1,7 @@
+# s3_configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-config
+data:
+  APP_MODE: production

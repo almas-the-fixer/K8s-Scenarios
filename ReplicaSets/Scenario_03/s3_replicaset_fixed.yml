@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: shop-rs
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: shop
+  template:
+    metadata:
+      labels:
+        app: shop
+    spec:
+      containers:
+        - name: shop
+          image: nginx:1.25
+          env:
+            - name: APP_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-config
+                  key: APP_MODE # Bug#1 the key name must've been same as in config map          
+          readinessProbe:
+            httpGet:
+              path: /   # Nginx doesnt have /health endpoint by default so it returned 404
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
