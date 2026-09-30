@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-api
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: shop-api
+  template:
+    metadata:
+      labels:
+        app: shop-api
+    spec:
+      containers:
+        - name: api
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: / # BUG WAS HERE theres no /status endpoint on nginx stock image only / so the pods were not 'ready' because this was returning 404 perhaps
+              port: 80
+            initialDelaySeconds: 2
+            periodSeconds: 5
