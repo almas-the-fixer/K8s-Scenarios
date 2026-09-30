@@ -1,2 +1,54 @@
 # K8s-Scenarios
-Some K8s Scenarios to Practice K8s
+
+A set of hands-on Kubernetes scenarios for CKA-style practice, run against a free multi-node playground (e.g. Killercoda's generic Kubernetes Playground).
+
+Each scenario is meant to be solved on a live cluster, not just read. Some are clean create-and-verify exercises; others start from a broken manifest that applies cleanly but fails at runtime, and the task is to diagnose and fix it using standard `kubectl` diagnostics — no guessing.
+
+## Structure
+
+demos/
+  <Object>/       concept reference: short definition, skeleton YAML, key gotchas
+scenarios/
+  <Object>/
+    SCENARIO.md    the question(s) for that object
+    s1_*.yml       supporting YAML for Scenario 1
+    s2_*.yml       supporting YAML for Scenario 2
+    s3_*.yml       supporting YAML for Scenario 3
+
+Each object under `scenarios/` generally has three scenarios of increasing difficulty:
+
+- **Scenario 1** — clean creation and verification. No bugs, just getting the object's core commands and behavior into muscle memory.
+- **Scenario 2** — a single, targeted bug. Diagnose it with `kubectl describe` / `kubectl get events`, then fix it.
+- **Scenario 3** — a wrap-up scenario with multiple stacked bugs, often harder than what the real CKA exam asks. Fixing one issue frequently reveals the next.
+
+A file containing an intentionally broken manifest is marked with a comment header at the top (`BUGGY FILE`). The fix goes into a separate `*_fixed.yml` file rather than editing the broken one in place, so the broken version stays intact as a reference.
+
+## Status
+
+| Object | Status |
+|---|---|
+| Pod | Done |
+| ReplicaSet | Done |
+| Deployment | Done |
+| Service | In progress |
+| ConfigMap | Not started |
+| Secret | Not started |
+| Volumes | Not started |
+| PV / PVC | Not started |
+| Namespace | Not started |
+| DaemonSet | Not started |
+| StatefulSet | Partial (one earlier scenario, predates this repo's current format) |
+| Job | Not started |
+| CronJob | Not started |
+| Ingress | Not started |
+| RBAC | Not started |
+| HPA | Not started |
+| NetworkPolicy | Not started |
+
+## Running a scenario
+
+1. Read `SCENARIO.md` in the object's folder under `scenarios/`.
+2. Spin up a cluster to practice on — [Killercoda's Kubernetes Playground](https://killercoda.com/playgrounds/scenario/kubernetes) is a free, multi-node option that works well for these.
+3. Apply the supporting YAML yourself with `kubectl apply -f`.
+4. Diagnose and fix using standard `kubectl` commands — `describe`, `get events`, `logs`, `exec`, etc.
+5. Hints, where included, are collapsed by default — expand only if stuck.
