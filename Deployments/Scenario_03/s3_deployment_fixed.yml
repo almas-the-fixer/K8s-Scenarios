@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-cart
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shop-cart # First bug was here the selector field is immutable meaning u cannot addd new label to matchLabels because it may cause issues with deployment 
+  template:
+    metadata:
+      labels:
+        app: shop-cart
+    spec:
+      containers:
+        - name: cart
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
+          env:
+            - name: CART_MODE # Second bug was here the key didnt match the correct casing from secret!
+              valueFrom:
+                secretKeyRef:
+                  name: cart-secret
+                  key: cart_mode
+          resources:
+            requests:
+              memory: 32Mi  #Final Bug was here the 2Mi memory was too low the Pods were gettin OOMKilled ( see events after applying bad file)
+            limits:
+              memory: 64Mi # Here as well

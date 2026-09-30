@@ -1,0 +1,25 @@
+# s3_deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-cart
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: shop-cart
+  template:
+    metadata:
+      labels:
+        app: shop-cart
+    spec:
+      containers:
+        - name: cart
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              memory: 32Mi
+            limits:
+              memory: 64Mi
