@@ -32,8 +32,8 @@ A file containing an intentionally broken manifest is marked with a comment head
 | Pod | Done |
 | ReplicaSet | Done |
 | Deployment | Done |
-| Service | In progress |
-| ConfigMap | Not started |
+| Service | Done |
+| ConfigMap | In Progress |
 | Secret | Not started |
 | Volumes | Not started |
 | PV / PVC | Not started |
