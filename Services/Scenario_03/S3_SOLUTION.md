@@ -62,11 +62,12 @@ curl 172.30.1.2:30000
 ```
 nginx welcome page returned. NodePort opens on *every* node's real IP regardless of which node the Pod actually runs on — testing it against the ClusterIP instead of a node IP produces the same "no matching rule" hang as Bug 3, not a real failure.
 
-**`metrics` (untouched port, confirms the `web` fixes didn't collide with it):**
+**`metrics` (untouched port) — a fourth finding, not a fix:**
 ```bash
-curl 10.108.17.198:9090
+curl 10.108.87.195:9090
 ```
-`[pending]`
+
+`Connection refused` in 0ms, not a hang — this means something *did* answer and immediately rejected the connection, because nothing inside the container is listening on 9090. `containerPort: 9090` in the Deployment spec is only metadata/documentation; it doesn't make anything bind to that port. Stock `nginx:1.25` only runs its web server on port 80, so `metrics` was never a functioning port from the very start of this scenario — `get svc` and `get endpoints` both reported it as fully configured anyway, because neither one checks whether a real process is actually listening inside the container.
 
 ### Key takeaways
 
@@ -75,3 +76,4 @@ curl 10.108.17.198:9090
 - `protocol` (TCP vs UDP) determines which kind of `kube-proxy` rule gets installed. A port with the wrong protocol isn't "refused" — there's no rule to even respond, so the connection just hangs instead of failing immediately. **Connection refused** = something answered and said no. **Hanging/timeout** = nothing answered at all, because no rule matches.
 - `kubectl get endpoints` shows real Pod `IP:port` pairs — the actual backends behind a Service. Curling an endpoint IP directly is a valid debugging technique to isolate "is the Pod itself fine" from "is the Service's routing broken," but it isn't the normal traffic path — normal traffic always goes through the Service's own address.
 - A **NodePort** is a separate listener opened on every node's real IP — it is not reachable via `<ClusterIP>:<nodePort>`. Test it against an actual node IP (`kubectl get nodes -o wide`), any node, regardless of where the Pod is scheduled.
+- A **`containerPort` declared in a Pod spec is purely informational** — it does not make anything listen there. `get svc`/`get endpoints` reporting a port as "configured" only means the Service-side routing is set up correctly; it says nothing about whether a real process inside the container is actually bound to that port. `Connection refused` at the final hop (container itself) is the signature of this gap — something in the OS answered and said no, because truly nothing is there.
