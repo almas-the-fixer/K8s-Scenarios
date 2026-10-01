@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-demo-2
+spec:
+  containers:
+    - name: config-demo-2-container
+      image: busybox:1.36
+      command: ["sh", "-c", "echo Starting in mode: $APP_MODE && sleep 3600"]
+      env:
+        - name: APP_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: app-settings
+              key: APP_MODE       # Bug #1: Typo APP_MDOE -> APP_MODE
+              optional: true      # Bug #2: The ConfigMap likely failed silently instead of throwing a CreateContainerConfigError because this optional key is set to true so even though there was a clear typo in the configMapKeyRef it still didnt threw CreateContainerConfigError !!

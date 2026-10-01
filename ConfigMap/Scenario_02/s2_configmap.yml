@@ -1,0 +1,7 @@
+# s2_configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-settings
+data:
+  APP_MODE: production
