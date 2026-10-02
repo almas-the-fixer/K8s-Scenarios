@@ -33,8 +33,8 @@ A file containing an intentionally broken manifest is marked with a comment head
 | ReplicaSet | Done |
 | Deployment | Done |
 | Service | Done |
-| ConfigMap | In Progress |
-| Secret | Not started |
+| ConfigMap | Done |
+| Secret | In Progress |
 | Volumes | Not started |
 | PV / PVC | Not started |
 | Namespace | Not started |
