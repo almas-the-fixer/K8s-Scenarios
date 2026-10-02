@@ -1,0 +1,7 @@
+# s3_configmap_override.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-override
+data:
+  DB_HOST: override-db.local

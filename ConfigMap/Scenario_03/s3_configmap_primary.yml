@@ -1,0 +1,11 @@
+# s3_configmap_primary.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-primary
+data:
+  DB_HOST: primary-db.local
+  DB_PORT: "5432"
+  nginx.conf: |
+    server_name example.com;
+    listen 80;

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-demo-3
+spec:
+  containers:
+    - name: config-demo-3-container
+      image: busybox:1.36
+      command: ["sh", "-c", "echo DB_HOST=$DB_HOST && echo DB_PORT=$DB_PORT && cat /etc/nginx/nginx.conf && sleep 3600"]
+      envFrom:
+        - configMapRef:
+            name: db-override   # Insight! K8s applies env vars from top to bottom so first this config map was populating the values then the other one overwrited the Value for DB_HOST.
+        - configMapRef:         # DB_HOST was overrwritten by db-prmary configmap !
+            name: db-primary
+      volumeMounts:
+        - name: nginx-conf-vol
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf     # Insight! subPath skips the symlink-swap trick K8s normally uses for ConfigMap volumes — it hard-wires straight to the file content at container start. So if we change the ConfigMap later, this file does NOT sync with the new content and K8s keeps the old one UNLESS we restart the Container.
+  volumes:
+    - name: nginx-conf-vol
+      configMap:
+        name: db-primary
+        items:
+          - key: nginx.conf        # Bug #1: Referencing Wrong Key the correct one is nginx.conf
+            path: nginx.conf
