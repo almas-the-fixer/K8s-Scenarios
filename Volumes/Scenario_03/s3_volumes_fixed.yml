@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: vol-s3-pod
+spec:
+  initContainers:
+  - name: init-busybox
+    image: busybox:1.36
+    command: ['sh', '-c', 'echo "Welcome to Scenario 3" > /wrong-data/index.html']  # Bug 3: the init container is piping output to a path that doesnt exist! so either change the /data here or change the mountPath so that both of them match! This one took a while
+    volumeMounts:
+    - name: shared-data
+      mountPath: /wrong-data
+  containers:
+  - name: app-nginx
+    image: nginx:alpine
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+    - name: host-logs
+      mountPath: /var/log/nginx
+    - name: config-vol
+      mountPath: /etc/nginx/conf.d
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+  - name: host-logs
+    hostPath:
+      path: /var/log/nginx
+      type: DirectoryOrCreate # Bug 2: Need to be Directory
+  - name: config-vol
+    configMap:
+      name: app-config # Bug 1: Wrong configmap name!! change it from config-vol -> app-config
