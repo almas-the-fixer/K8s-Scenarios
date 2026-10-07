@@ -34,8 +34,8 @@ A file containing an intentionally broken manifest is marked with a comment head
 | Deployment | Done |
 | Service | Done |
 | ConfigMap | Done |
-| Secret | In Progress |
-| Volumes | Not started |
+| Secret | Done |
+| Volumes | Done |
 | PV / PVC | Not started |
 | Namespace | Not started |
 | DaemonSet | Not started |
